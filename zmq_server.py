@@ -1,9 +1,14 @@
-import time
 import zmq
+import time
+import os
+import sys
 
 context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5555")
+socket = context.socket(zmq.SUB)
+socket.connect("tcp://0.0.0.0:135")
+socket.setsockopt(zmq.SUBSCRIBE, '')
+ourFile = 'C:\Personal Projects\geotiff_over_zmq\sample.tif'
+path = 'C:\Personal Projects\geotiff_over_zmq\sample_folder'
 
 while True:
     message = socket.recv()
