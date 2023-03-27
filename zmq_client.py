@@ -4,13 +4,12 @@ import os
 import sys
 
 bindPort = ("tcp://0.0.0.0:135")
-print("Connecting to file server...")
+print("GEOTIFF over ZMQ initializing...")
 context = zmq.Context()
 publisher = context.socket(zmq.PUB)
 publisher.bind(bindPort)
 time.sleep(1)
-ourFile = 'C:\Personal Projects\geotiff_over_zmq\sample.tif'
-
+ourFile = open("sample.tif", "rb")
 size = os.path.getsize(ourFile)
 
 target = open(ourFile, 'rb')
