@@ -6,25 +6,32 @@ import os
 
 separator = "<SEPARATOR>"
 BUFFER_SIZE = 4096
+fileName = "sample.tif"
 
 print("GEOTIFF over ZMQ initializing...")
 context = zmq.Context()
+print("Creating publisher socket....")
 publisher = context.socket(zmq.PUB)
-publisher.bind("tcp://*:5555")
+publisher.connect("tcp://localhost:5555")
+print(f"Connecting to {publisher}...")
 time.sleep(1)
-ourFile = 'C:\Personal Projects\geotiff_over_zmq\sample.tif'
-size = os.stat(ourFile).st_size
-print(f"The size of this file is: {size} bytes")
+size = os.path.getsize(fileName)
+print(f"The size of {fileName} is: {size} bytes.")
 
-target = open(ourFile, 'rb')
-file = target.read(size)
-if file:
-    publisher.send(file)
+publisher.send_string(f"{fileName}{separator}{size}")
 
-
+progress = tqdm.tqdm(range(size), f"Sending {fileName}", unit="B", unit_scale=True, unit_divisor=1024)
+with open(fileName, "rb") as f:
+    while True:
+        bytes_read = f.read(BUFFER_SIZE)
+        if not bytes_read:
+            break
+        else:
+            publisher.send(bytes_read)
+            progress.update(len(bytes_read))
 publisher.close
-context.term
-target.close
-time.sleep(10)
+
+
+
 
 
