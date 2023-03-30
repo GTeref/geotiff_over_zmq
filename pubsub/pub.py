@@ -19,7 +19,7 @@ time.sleep(1)
 size = os.path.getsize(fileName)
 print(f"The size of {fileName} is: {size} bytes.")
 
-publisher.send(f"{fileName}{separator}{size}".encode())
+publisher.send_multipart(fileName, size)
 
 progress = tqdm.tqdm(range(size), f"Sending {fileName}", unit="B", unit_scale=True, unit_divisor=1024)
 with open(fileName, "rb") as f:
