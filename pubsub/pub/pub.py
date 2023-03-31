@@ -18,9 +18,10 @@ print(f"Connecting to {serverAddress}...")
 time.sleep(1)
 size = os.path.getsize(fileName)
 print(f"The size of {fileName} is: {size} bytes.")
-
-publisher.send_multipart(fileName, size)
-
+size = str(size)
+publisher.send_string(fileName)
+publisher.send_string(size)
+size =  int(size)
 progress = tqdm.tqdm(range(size), f"Sending {fileName}", unit="B", unit_scale=True, unit_divisor=1024)
 with open(fileName, "rb") as f:
     while True:

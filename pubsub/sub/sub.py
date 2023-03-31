@@ -12,17 +12,19 @@ print("Connecting to GEOTIFF over ZMQ...")
 context = zmq.Context()
 subscriber = context.socket(zmq.SUB)
 subscriber.bind(clientAddress)
-subscriber.setsockopt_string(zmq.SUBSCRIBE, '')
+subscriber.setsockopt(zmq.SUBSCRIBE, b"")
 
-print(f"Listening over {subscriber}...")
-fileSocket, serverAddress = subscriber.recv_string()
-fileSocket = context.socket(zmq.SUB)
-print(f"{serverAddress} has connected to {clientAddress}.")
-
-fileBuffer = fileSocket.recv(BUFFER_SIZE).decode()
-fileName, size = fileBuffer.split(separator)
-fileName = os.path.basename(fileName)
+print(f"Listening over {clientAddress}...")
+fileName = subscriber.recv_string()
+size = subscriber.recv_string()
 size = int(size)
+fileSocket = context.socket(zmq.SUB)
+print(f"Receiving file {fileName} with size: {size} bytes...")
+
+# fileBuffer = fileSocket.recv(BUFFER_SIZE).decode()
+# fileName, size = fileBuffer.split(separator)
+# fileName = os.path.basename(fileName)
+# size = int(size)
 
 progress = tqdm.tqdm(range(size), f"Receiving {fileName}", unit="B", unit_scale=True, unit_divisor=1024)
 
