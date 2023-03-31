@@ -23,7 +23,7 @@ publisher.send_string(fileName)
 publisher.send_string(size)
 size =  int(size)
 progress = tqdm.tqdm(range(size), f"Sending {fileName}", unit="B", unit_scale=True, unit_divisor=1024)
-with open(fileName, "rb") as f:
+with open(fileName, 'rb') as f:
     while True:
         bytes_read = f.read(BUFFER_SIZE)
         if not bytes_read:
